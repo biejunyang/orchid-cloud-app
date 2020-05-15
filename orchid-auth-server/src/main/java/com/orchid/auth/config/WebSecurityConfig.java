@@ -1,7 +1,5 @@
 package com.orchid.auth.config;
 
-import com.orchid.auth.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,13 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
 
-
-    @Override
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return  this.userDetailsService;
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -48,14 +39,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-            .mvcMatchers("/.well-known/jwks.json").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin().permitAll()
-            .and()
-            .httpBasic()
-            .and()
-            .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI()));
+                .mvcMatchers("/.well-known/jwks.json", "/login").permitAll()
+                .anyRequest().authenticated().and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll().and()
+            .logout().and()
+            .csrf().disable();
+//            .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI()));
     }
 
 

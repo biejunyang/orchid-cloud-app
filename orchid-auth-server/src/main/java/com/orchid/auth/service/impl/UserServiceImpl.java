@@ -22,6 +22,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return super.getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
+        User user=super.getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
+        if(user==null){
+            throw new UsernameNotFoundException("用户名错误");
+        }
+        return user;
     }
 }

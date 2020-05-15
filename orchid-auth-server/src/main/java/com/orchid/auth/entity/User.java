@@ -5,6 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.orchid.mybatis.entity.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,10 +23,11 @@ import java.util.Collection;
  */
 @SuppressWarnings("serial")
 @TableName("user")
-public class User extends Model<User> implements UserDetails {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class User extends BaseEntity<User>implements UserDetails {
 
-    @TableId(value="id", type = IdType.ID_WORKER)
-    private Integer id;
 
     @TableField("username")
     private String username;
@@ -30,15 +35,9 @@ public class User extends Model<User> implements UserDetails {
     @TableField("password")
     private String password;
 
+    @TableField("state")
+    private Integer state;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public String getUsername() {
@@ -47,51 +46,30 @@ public class User extends Model<User> implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return !this.state.equals(3);
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return !this.state.equals(2);
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.state.equals(1);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * 获取主键值
-     *
-     * @return 主键值
-     */
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
 
 
 }

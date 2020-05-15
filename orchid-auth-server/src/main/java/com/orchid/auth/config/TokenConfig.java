@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * OAuth2 Token Manage Config
  */
-//@Configuration
+@Configuration
 public class TokenConfig {
 
 
@@ -55,8 +55,6 @@ public class TokenConfig {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setKeyPair(keyPair);
 
-        //对称加密签名
-//        converter.setSigningKey("123456");
 
         DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
         accessTokenConverter.setUserTokenConverter(new SubjectAttributeUserTokenConverter());
@@ -89,33 +87,6 @@ public class TokenConfig {
             throw new IllegalArgumentException(e);
         }
     }
-
-
-
-    /**
-     * Legacy Authorization Server (spring-security-oauth2) does not support any
-     * <a href target="_blank" href="https://tools.ietf.org/html/rfc7517#section-5">JWK Set</a> endpoint.
-     *
-     * This class adds ad-hoc support in order to better support the other samples in the repo.
-     */
-    @FrameworkEndpoint
-    class JwkSetEndpoint {
-        KeyPair keyPair;
-
-        JwkSetEndpoint(KeyPair keyPair) {
-            this.keyPair = keyPair;
-        }
-
-        @GetMapping("/.well-known/jwks.json")
-        @ResponseBody
-        public Map<String, Object> getKey() {
-            RSAPublicKey publicKey = (RSAPublicKey) this.keyPair.getPublic();
-            RSAKey key = new RSAKey.Builder(publicKey) .keyUse(KeyUse.SIGNATURE)
-                    .keyID(UUID.randomUUID().toString()).build();
-            return new JWKSet(key).toJSONObject();
-        }
-    }
-
 
 
     /**

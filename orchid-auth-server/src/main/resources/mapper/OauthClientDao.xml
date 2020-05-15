@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orchid.auth.dao.OauthClientDao">
+
+    <resultMap type="com.orchid.auth.entity.OauthClient" id="BaseResultMap">
+        <id property="id" column="id"/>
+        <result property="clientId" column="client_id"/>
+        <result property="clientSecret" column="client_secret"/>
+        <result property="authorizedGrantTypes" column="authorized_grant_types" typeHandler="com.orchid.mybatis.handler.StringSetTypeHandler"/>
+        <result property="redirectUris" column="redirect_uris" typeHandler="com.orchid.mybatis.handler.StringSetTypeHandler"/>
+        <result property="accessTokenValiditySeconds" column="access_token_validity_seconds"/>
+        <result property="refreshTokenValiditySeconds" column="refresh_token_validity_seconds"/>
+        <result property="disabled" column="disabled"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createClient" column="create_client"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateClient" column="update_client"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.orchid.auth.entity.OauthClient" id="ClientResultMap">
+        <id property="id" column="id"/>
+        <result property="clientId" column="client_id"/>
+        <result property="clientSecret" column="client_secret"/>
+        <result property="authorizedGrantTypes" column="authorized_grant_types" typeHandler="com.orchid.mybatis.handler.StringSetTypeHandler"/>
+        <result property="redirectUris" column="redirect_uris" typeHandler="com.orchid.mybatis.handler.StringSetTypeHandler"/>
+        <result property="accessTokenValiditySeconds" column="access_token_validity_seconds"/>
+        <result property="refreshTokenValiditySeconds" column="refresh_token_validity_seconds"/>
+        <result property="disabled" column="disabled"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createClient" column="create_client"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateClient" column="update_client"/>
+        <result property="updateTime" column="update_time"/>
+
+        <collection property="clientScopes" ofType="com.orchid.auth.entity.OauthClientScope">
+            <id property="id" column="scope_id" />
+            <result property="oauthClientId" column="oauth_client_id" />
+            <result property="code" column="code" />
+            <result property="name" column="name" />
+            <result property="autoApprove" column="auto_approve" />
+        </collection>
+    </resultMap>
+
+    <select id="loadClientByClientId" resultMap="ClientResultMap">
+        SELECT
+           c.*, s.id scope_id, s.code, s.name, s.auto_approve
+        FROM oauth_client c
+        LEFT JOIN oauth_client_scope s ON c.id = s.oauth_client_id
+        where c.client_id = #{clientId}
+    </select>
+
+
+</mapper>
