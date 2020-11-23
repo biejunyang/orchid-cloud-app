@@ -14,19 +14,27 @@ eureka:
 spring:
   application:
     name: orchid-gateway
+  redis:
+    host: 10.225.12.96
+    port: 6379
+    password: bgiredis
   cloud:
     gateway:
       ##自动搜索微服务列表创建路由
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-
-      ## 手动定义路由
-#      routes:
-#        - id: docker-example
-#          uri: lb://docker-example
-#          predicates:
-#          - Path=/docker-example/**
-#          filters:
-#            - StripPrefix=1
+#      discovery:
+#        locator:
+#          enabled: true
+#          lower-case-service-id: true
+      # 手动定义路由
+      routes:
+        - id: eureka-client
+          uri: lb://eureka-client
+          predicates:
+          - Path=/eureka-client/**
+          filters:
+          - StripPrefix=1
+          - name: RequestRateLimiter
+            args:
+              redis-rate-limiter.replenishRate: 3
+              redis-rate-limiter.burstCapacity: 5
+              key-resolver: "#{@apiKeyResolver}"
