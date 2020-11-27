@@ -38,3 +38,7 @@ spring:
               redis-rate-limiter.replenishRate: 3
               redis-rate-limiter.burstCapacity: 5
               key-resolver: "#{@apiKeyResolver}"
+          - name: Hystrix
+            args:
+              name: fallbackcmd
+              fallbackUri: forward:/fallback
